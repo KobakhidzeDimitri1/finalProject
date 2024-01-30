@@ -1,11 +1,16 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./productItem.css";
 import { GoStarFill } from "react-icons/go";
 import { FaCartPlus } from "react-icons/fa";
 import ApiService from "../../services/apiService";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProductItem = ({ productData }) => {
+  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const {
     _id: prodId,
     title,
@@ -16,7 +21,10 @@ const ProductItem = ({ productData }) => {
   } = productData;
 
   const addToCart = async () => {
-    await ApiService.addToCart(productData._id);
+    if (!auth.token) return navigate("/login");
+    ApiService.addToCart(productData._id).catch((err) =>
+      alert("Coudlnt add product")
+    );
   };
 
   const starsArray = [];
@@ -26,7 +34,7 @@ const ProductItem = ({ productData }) => {
   return (
     <div className="product-card">
       <div className="card-image-wrapper">
-        <img className="card-image" src={imageUrl} alt="product" />
+        <img className="card-image" src={imageUrl[0]} alt="product" />
       </div>
       <h3 className="card-title">{title}</h3>
       <div className="card-review">

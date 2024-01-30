@@ -1,13 +1,15 @@
 const Product = require("../models/product");
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 8;
 
 exports.getProducts = (req, res, next) => {
-  let { page } = req.query;
+  let { page, sortId, prodName } = req.query;
   const { categoryName } = req.params;
 
   let filterObject = { type: categoryName };
   if (!categoryName || categoryName === "all") filterObject = {};
+  if (prodName)
+    filterObject = { ...filterObject, title: new RegExp(prodName, "i") };
 
   Product.find(filterObject)
     .countDocuments()
@@ -16,11 +18,17 @@ exports.getProducts = (req, res, next) => {
       if (isNaN(page) || !page || page < 1) page = 1;
       if (page > lastPage) page = lastPage;
 
+      let sortObject = {};
+      if (sortId == 1) sortObject = { price: -1 };
+      if (sortId == 2) sortObject = { price: 1 };
+
       Product.find(filterObject)
+        .sort(sortObject)
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE)
         .then((products) => res.send({ products, lastPage }))
         .catch((err) => {
+          console.log(err);
           res.status(500).send({ msg: "Page Not Found" });
         });
     })

@@ -31,7 +31,7 @@ const NavBar = () => {
             to="category/all"
             className={({ isActive }) => (isActive ? "active-navlink" : "")}
           >
-            Home
+            All
           </NavLink>
         </li>
         <li>

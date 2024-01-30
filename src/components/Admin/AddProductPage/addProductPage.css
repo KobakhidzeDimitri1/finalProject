@@ -10,6 +10,7 @@
 .form select {
   padding: 0 0.5rem;
   min-height: 2rem;
+  width: 100%;
 }
 .form textarea {
   width: 100%;

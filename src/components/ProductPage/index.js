@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import "./productPage.css";
 import ApiService from "../../services/apiService";
 import ProductItem from "../ProductItem";
+import PageChangerBar from "../PageChangerBar";
+import ProductSorter from "../ProductSorter";
+import Spinner from "../Spinner";
 
 export const ProductPage = () => {
   const navigate = useNavigate();
@@ -16,53 +14,64 @@ export const ProductPage = () => {
   const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [lastPage, setLastPage] = useState();
-  const pageNumber = +searchParams.get("page") || 1;
+  const [queryParams, setQueryParams] = useState({
+    page: +searchParams.get("page") || 1,
+    sortId: +searchParams.get("sortId") || 1,
+    prodName: searchParams.get("prodName") || "",
+  });
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    ApiService.getCategoryProducts(categoryName, pageNumber || 1)
+    navigate(
+      `/category/${categoryName}?page=${queryParams.page}&sortId=${queryParams.sortId}&prodName=${queryParams.prodName}`
+    );
+    ApiService.getCategoryProducts(
+      categoryName,
+      queryParams.page,
+      queryParams.sortId,
+      queryParams.prodName
+    )
       .then((res) => {
         const { products, lastPage } = res.data;
         setProducts(products);
+        setError("");
         setLastPage(parseInt(lastPage));
       })
-      .catch((err) => navigate("/404"));
+      .catch((err) => setError("No Products Found"));
 
     return () => window.scrollTo(0, 0);
-  }, [pageNumber, categoryName, navigate]);
+  }, [
+    categoryName,
+    queryParams.page,
+    queryParams.sortId,
+    queryParams.prodName,
+    navigate,
+  ]);
 
+  if (!products.length && !error) return <Spinner />;
   return (
     <div className="product-page-container">
-      <div className="product-wrapper">
-        {products.map((product) => (
-          <ProductItem key={product._id} productData={product} />
-        ))}
-      </div>
-      <div className="page-changer">
-        {pageNumber - 1 > 0 ? (
-          <Link
-            to={{
-              pathname: `/category/${categoryName}`,
-              search: `?page=${pageNumber - 1}`,
-            }}
-          >
-            Prev
-          </Link>
-        ) : (
-          <span>prev</span>
-        )}
-        {pageNumber + 1 <= lastPage ? (
-          <Link
-            to={{
-              pathname: `/category/${categoryName}`,
-              search: `?page=${pageNumber + 1}`,
-            }}
-          >
-            Next
-          </Link>
-        ) : (
-          <span>Next</span>
-        )}
-      </div>
+      <ProductSorter
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+      />
+      {error ? (
+        <h1>{error}</h1>
+      ) : (
+        <>
+          <div className="product-wrapper">
+            {products.map((product) => (
+              <ProductItem key={product._id} productData={product} />
+            ))}
+          </div>
+          <PageChangerBar
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            categoryName={categoryName}
+            lastPage={lastPage}
+          />
+        </>
+      )}
     </div>
   );
 };

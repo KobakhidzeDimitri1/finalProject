@@ -1,5 +1,4 @@
 .overlay-remove-item {
-  margin-top: 0.4rem;
   cursor: pointer;
   font-weight: 500;
   border-bottom: 1px solid var(--mainFont);
@@ -14,7 +13,6 @@
   overflow: hidden;
   border: 1px solid #bbb;
   padding: 0.5rem 0.8rem;
-  gap: 0.5rem;
 }
 .overlay-product-img {
   max-width: 8rem;

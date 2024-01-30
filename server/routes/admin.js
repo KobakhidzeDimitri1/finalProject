@@ -11,5 +11,10 @@ router.post(
   [verifyToken, verifyAdmin],
   adminController.postAddProduct
 );
+router.post(
+  "/delete-product",
+  [verifyToken, verifyAdmin],
+  adminController.postDeleteProduct
+);
 
 module.exports = router;

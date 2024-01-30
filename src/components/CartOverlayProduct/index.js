@@ -36,7 +36,7 @@ const CartOverlayProduct = ({ productInfo, setCart }) => {
     <div className="overlay-product-card">
       <img
         className="overlay-product-img"
-        src={productInfo.product.imageUrl}
+        src={productInfo.product.imageUrl[0]}
         alt="product"
       />
       <span className="overlay-product-price">
@@ -57,6 +57,9 @@ const CartOverlayProduct = ({ productInfo, setCart }) => {
           +
         </span>
       </div>
+      <span className="overlay-product-price">
+        ${productInfo.product.price * productInfo.quantity}
+      </span>
       <span
         className="overlay-remove-item"
         onClick={() => removeProduct(productInfo.product._id)}

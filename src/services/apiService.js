@@ -3,10 +3,9 @@ import axios from "axios";
 class ApiService {
   static apiBase = process.env.REACT_APP_API_BASE;
 
-  // user
-  static async getCategoryProducts(category, pageNumber) {
+  static async getCategoryProducts(category, pageNumber, sortId, prodName) {
     const res = await axios.get(
-      `${this.apiBase}/category/${category}?page=${pageNumber}`
+      `${this.apiBase}/category/${category}?page=${pageNumber}&sortId=${sortId}&prodName=${prodName}`
     );
     return res;
   }
@@ -19,7 +18,6 @@ class ApiService {
     return res;
   }
   static async register(userData) {
-    console.log(userData);
     const res = await axios.post(`${this.apiBase}/register`, userData);
     return res;
   }
@@ -89,6 +87,21 @@ class ApiService {
         Authorization: "Bearer " + token,
       },
     });
+    return res;
+  }
+  static async deleteProductFromDb(prodId) {
+    const token = localStorage.getItem("token");
+    if (!token) return 1;
+
+    const res = await axios.post(
+      `${this.apiBase}/delete-product`,
+      { prodId },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
     return res;
   }
 }

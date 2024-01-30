@@ -10,7 +10,7 @@ import "./app.css";
 import NavBar from "../NavBar";
 import ProductPage from "../ProductPage";
 import ProductDetailPage from "../ProductDetailPage";
-import AddProductPage from "../AddProductPage";
+import AddProductPage from "../Admin/AddProductPage";
 import LoginPage from "../LoginPage";
 import RegisterPage from "../RegisterPage";
 import ErrorPage from "../ErrorPage";
