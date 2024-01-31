@@ -1,14 +1,23 @@
 import "./pageChangerBar.css";
 
-const PageChangerBar = ({ queryParams, setQueryParams, lastPage }) => {
-  const isPositive = queryParams.page > 0;
-  const moreThanLimit = queryParams.page > lastPage;
-  const firstPage = queryParams.page === 1;
-  const moreThan3page = queryParams.page > 3;
-  const isLastPage = queryParams.page === lastPage;
+const PageChangerBar = ({
+  prodName,
+  sortId,
+  page,
+  setQueryParams,
+  lastPage,
+}) => {
+  // console.log(page);
+  // console.log(sortId);
+  // console.log(prodName);
+  const isPositive = page > 0;
+  const moreThanLimit = page > lastPage;
+  const firstPage = page === 1;
+  const moreThan3page = page > 3;
+  const isLastPage = page === lastPage;
 
   const changePage = (e) => {
-    setQueryParams((prev) => ({ ...prev, page: +e.target.dataset.page }));
+    setQueryParams({ page: +e.target.dataset.page, sortId, prodName });
   };
 
   return (
@@ -18,7 +27,7 @@ const PageChangerBar = ({ queryParams, setQueryParams, lastPage }) => {
         onClick={changePage}
         data-page="1"
         style={
-          queryParams.page === 1
+          page === 1
             ? {
                 fontWeight: "bold",
               }
@@ -27,15 +36,15 @@ const PageChangerBar = ({ queryParams, setQueryParams, lastPage }) => {
       >
         1
       </span>
-      {isPositive && !moreThanLimit && queryParams.page - 1 > 1 && (
+      {isPositive && !moreThanLimit && page - 1 > 1 && (
         <>
           {moreThan3page && <span>...</span>}
           <span
             className="changer-number"
             onClick={changePage}
-            data-page={queryParams.page - 1}
+            data-page={page - 1}
           >
-            {queryParams.page - 1}
+            {page - 1}
           </span>
         </>
       )}
@@ -43,22 +52,22 @@ const PageChangerBar = ({ queryParams, setQueryParams, lastPage }) => {
         <span
           className="changer-number"
           onClick={changePage}
-          data-page={queryParams.page}
+          data-page={page}
           style={{ fontWeight: "bold" }}
         >
-          {queryParams.page}
+          {page}
         </span>
       )}
       {!isLastPage && isPositive && !moreThanLimit && (
         <span
           className="changer-number"
           onClick={changePage}
-          data-page={queryParams.page + 1}
+          data-page={page + 1}
         >
-          {queryParams.page + 1}
+          {page + 1}
         </span>
       )}
-      {((lastPage > 2 && lastPage - 1 > queryParams.page) || moreThanLimit) && (
+      {((lastPage > 2 && lastPage - 1 > page) || moreThanLimit) && (
         <span
           className="changer-number"
           data-page={lastPage}

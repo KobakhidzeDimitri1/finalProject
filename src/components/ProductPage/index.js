@@ -10,27 +10,22 @@ import Spinner from "../Spinner";
 
 export const ProductPage = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [lastPage, setLastPage] = useState();
-  const [queryParams, setQueryParams] = useState({
-    page: +searchParams.get("page") || 1,
-    sortId: +searchParams.get("sortId") || 1,
-    prodName: searchParams.get("prodName") || "",
-  });
+  const pageNumber = +searchParams.get("page") || 1;
+  const sortId = +searchParams.get("sortId") || 1;
+  const prodName = searchParams.get("prodName") || "";
+
   const [error, setError] = useState("");
 
+  console.log(pageNumber);
   useEffect(() => {
     navigate(
-      `/category/${categoryName}?page=${queryParams.page}&sortId=${queryParams.sortId}&prodName=${queryParams.prodName}`
+      `/category/${categoryName}?page=${pageNumber}&sortId=${sortId}&prodName=${prodName}`
     );
-    ApiService.getCategoryProducts(
-      categoryName,
-      queryParams.page,
-      queryParams.sortId,
-      queryParams.prodName
-    )
+    ApiService.getCategoryProducts(categoryName, pageNumber, sortId, prodName)
       .then((res) => {
         const { products, lastPage } = res.data;
         setProducts(products);
@@ -40,20 +35,16 @@ export const ProductPage = () => {
       .catch((err) => setError("No Products Found"));
 
     return () => window.scrollTo(0, 0);
-  }, [
-    categoryName,
-    queryParams.page,
-    queryParams.sortId,
-    queryParams.prodName,
-    navigate,
-  ]);
+  }, [categoryName, pageNumber, sortId, prodName, navigate]);
 
   if (!products.length && !error) return <Spinner />;
   return (
     <div className="product-page-container">
       <ProductSorter
-        queryParams={queryParams}
-        setQueryParams={setQueryParams}
+        sortId={sortId}
+        page={pageNumber}
+        prodName={prodName}
+        setQueryParams={setSearchParams}
       />
       {error ? (
         <h1>{error}</h1>
@@ -65,8 +56,10 @@ export const ProductPage = () => {
             ))}
           </div>
           <PageChangerBar
-            queryParams={queryParams}
-            setQueryParams={setQueryParams}
+            page={pageNumber}
+            prodName={prodName}
+            sortId={sortId}
+            setQueryParams={setSearchParams}
             categoryName={categoryName}
             lastPage={lastPage}
           />

@@ -2,8 +2,8 @@ import "./productSorter.css";
 import { IoSearch } from "react-icons/io5";
 import { useState } from "react";
 
-export const ProductSorter = ({ queryParams, setQueryParams }) => {
-  const [searchInput, setSearchInput] = useState(queryParams.prodName);
+export const ProductSorter = ({ page, sortId, prodName, setQueryParams }) => {
+  const [searchInput, setSearchInput] = useState(prodName);
 
   return (
     <div className="product-sorter">
@@ -15,22 +15,22 @@ export const ProductSorter = ({ queryParams, setQueryParams }) => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               console.log("hello");
-              setQueryParams((prev) => ({
-                ...prev,
-                prodName: `${searchInput}`,
+              setQueryParams({
                 page: 1,
-              }));
+                sortId,
+                prodName: `${searchInput}`,
+              });
             }
           }}
         />
         <span
           className="search-icon-wrapper"
           onClick={() =>
-            setQueryParams((prev) => ({
-              ...prev,
-              prodName: `${searchInput}`,
+            setQueryParams({
               page: 1,
-            }))
+              sortId,
+              prodName: `${searchInput}`,
+            })
           }
         >
           <IoSearch className="search-icon" />
@@ -39,9 +39,13 @@ export const ProductSorter = ({ queryParams, setQueryParams }) => {
       <span>Sort By</span>
       <select
         onChange={(e) =>
-          setQueryParams((prev) => ({ ...prev, sortId: e.target.value }))
+          setQueryParams({
+            page,
+            sortId: e.target.value,
+            prodName,
+          })
         }
-        value={queryParams.sortId}
+        value={sortId}
       >
         <option value="1">Price Desc.</option>
         <option value="2">Price Asc.</option>
